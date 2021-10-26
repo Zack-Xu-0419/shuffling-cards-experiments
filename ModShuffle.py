@@ -1,6 +1,6 @@
 # Specify Values
-numberOfDecks = 4
-numberOfCards = 12
+numberOfDecks = 13
+numberOfCards = 52
 
 
 # Initiate Cards - Deck with 'numberOfCards' Cards (Here we use numbers instead of card. At the end of the day, they are unique)
@@ -13,19 +13,19 @@ def InitiateCards(numberOfCards):
 # Function - disperseDeck - that categorize Cards into 'numberOfDecks' Number of decks (Array[] -> Array[Array[]])
 
 
-def disperseDeck(cardsArray):
+def disperseDeck(cardsArray, nDecks):
     result = []
-    for i in range(numberOfDecks):
+    for i in range(nDecks):
         thisDeck = []
         count = 1
         for j in cardsArray:
-            if count % numberOfDecks == i:
+            if count % nDecks == i:
                 thisDeck.insert(0, j)
             count += 1
         result.append(thisDeck)
     # When doing modulo, the pile that should appear last would actually appear first since it's divisible, this code is to ensure that it runs
     finalResult = []
-    for i in range(numberOfDecks-1):
+    for i in range(nDecks-1):
         finalResult.append(result[i+1])
     finalResult.append(result[0])
     ###
@@ -45,19 +45,27 @@ def flatten(distributedDeck):
 
 # Main loop that will go through the functions, count the amount of times it takes until the returned value matches the original one
 
+def calcNShuffle(n, d):
+    originalCards = InitiateCards(n)
 
-originalCards = InitiateCards(numberOfCards)
+    shuffleNCount = 2
+    cards = disperseDeck(originalCards, nDecks=d)
+    cards = flatten(cards)
 
-cards = disperseDeck(originalCards)
-print(cards)
-cards = flatten(cards)
-print(cards)
+    while originalCards != cards:
+        cards = disperseDeck(cards, nDecks=d)
+        cards = flatten(cards)
+        shuffleNCount += 1
+    return shuffleNCount
 
-cards = disperseDeck(cards)
-print(cards)
-cards = flatten(cards)
-print(cards)
 
-count = 0
+result = []
 
-print(count)
+
+for i in range(100):
+    oneRow = []
+    for j in range(100):
+        oneRow.append(calcNShuffle(i+1, j+1))
+    result.append(oneRow)
+
+print(result)
